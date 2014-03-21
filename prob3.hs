@@ -1,15 +1,16 @@
 import Data.List
 
-countup :: [Integer]
-countup = 2:(zipWith (+) (repeat 1) countup)
+isPrime :: Integer -> Bool
+isPrime n = all (/=0) $ map (n `mod`) [2..floor . sqrt . fromIntegral $ n]
 
-primes :: [Integer]
-primes = sieve countup
-    where sieve (x:xs) = x:(sieve $ filter (\i -> i `mod` x /= 0) xs)
+limit :: Integer
+limit = 600851475143
 
-ourPrimes = reverse $ takeWhile (<600851475143) primes
+smallLimit = floor . sqrt . fromIntegral $ limit
 
-main = do let factor = find (\i -> 600851475143 `mod` i == 0) ourPrimes
-          putStrLn $ case factor of
-	      (Just x) -> show x
-	      Nothing -> "error: could not find any factor"
+smallPrimes = filter isPrime [smallLimit, smallLimit - 1..2]
+
+main = let factor = find (\i -> limit `mod` i == 0) smallPrimes in
+       case factor of
+           (Just x) -> print x
+           Nothing -> print "error: could not find any factor"
